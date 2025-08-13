@@ -6,17 +6,15 @@ from collections import deque
 
 import socketio
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from prompts import TRUTHS, DARES
 app = FastAPI()
 
 @app.get("/")
 def read_root():
     return{"message": "hello from Truth or Dare!"}
-from fastapi.staticfiles import StaticFiles
 
-from prompts import TRUTHS, DARES
-
-# --- FastAPI (for static files) ---
-fastapi_app = FastAPI()
+# Mount static files
 fastapi_app.mount("/", StaticFiles(directory="static", html=True), name="static")
 
 # --- Socket.IO server (ASGI) ---
