@@ -1,46 +1,47 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Truth or Dare</title>
+    <meta charset="UTF-8">
+    <title>Truth or Dare Game</title>
     <style>
-        body { font-family: Arial; background: #fafafa; padding: 20px; }
-        #log { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: auto; background: white; }
-        button { padding: 10px 20px; margin: 5px; font-size: 16px; }
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        button { padding: 10px 20px; margin: 5px; font-size: 18px; cursor: pointer; }
+        #log { border: 1px solid #ccc; padding: 10px; width: 60%; margin: auto; height: 200px; overflow-y: auto; }
     </style>
 </head>
 <body>
-    <h1>Truth or Dare Game</h1>
+    <h1>Truth or Dare 🎯</h1>
+    <div id="status">Connecting to server...</div>
+    <div>
+        <button onclick="sendChoice('Truth')">Truth</button>
+        <button onclick="sendChoice('Dare')">Dare</button>
+    </div>
     <div id="log"></div>
-    <br>
-    <button onclick="sendMessage('Truth')">Truth</button>
-    <button onclick="sendMessage('Dare')">Dare</button>
 
     <script>
-        const log = document.getElementById('log');
-
-        function addMessage(message) {
-            log.innerHTML += `<div>${message}</div>`;
-            log.scrollTop = log.scrollHeight;
-        }
-
-        // Connect to backend WebSocket
-        const socket = new WebSocket("wss://YOUR-RENDER-URL.onrender.com/match");
+        let socket = new WebSocket("wss://truth-or-dare-game-ui95.onrender.com/match");
+        let statusDiv = document.getElementById("status");
+        let logDiv = document.getElementById("log");
 
         socket.onopen = () => {
-            addMessage("✅ Connected to server");
+            statusDiv.innerText = "Connected! Waiting for partner...";
         };
 
         socket.onmessage = (event) => {
-            addMessage("📩 " + event.data);
+            let msg = event.data;
+            logDiv.innerHTML += `<div>${msg}</div>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
         };
 
         socket.onclose = () => {
-            addMessage("❌ Disconnected from server");
+            statusDiv.innerText = "Disconnected from server.";
         };
 
-        function sendMessage(text) {
-            socket.send(text);
-            addMessage("📤 You: " + text);
+        function sendChoice(choice) {
+            if (socket.readyState === WebSocket.OPEN) {
+                socket.send(choice);
+                logDiv.innerHTML += `<div><b>You:</b> ${choice}</div>`;
+            }
         }
     </script>
 </body>
