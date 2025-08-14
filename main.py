@@ -1,74 +1,80 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
-from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 import random
 
 app = FastAPI()
 
-# Serve static folder
+# Serve your frontend
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# Store connected players
-waiting_player = None
-active_pairs = {}
-
-# Some sample questions
-truth_questions = [
-    "What is your biggest fear?",
-    "Have you ever lied to your best friend?",
-    "What is your most embarrassing moment?",
-    "Who was your first crush?"
-]
-
-dare_questions = [
-    "Do 10 push-ups right now!",
-    "Sing your favorite song out loud.",
-    "Dance for 30 seconds without music.",
-    "Speak in an accent for the next 2 turns."
-]
-
 @app.get("/")
-async def get_index():
+async def index():
     return FileResponse("static/index.html")
 
-@app.websocket("/match")
-async def match_players(websocket: WebSocket):
-    global waiting_player, active_pairs
-    await websocket.accept()
+# --- Matchmaking + signaling (1-to-1) ---
+waiting = None           # one waiting client
+partner_of = {}          # ws -> partner ws
 
-    if waiting_player is None:
-        waiting_player = websocket
-        await websocket.send_json({"type": "status", "message": "Waiting for a partner..."})
+TRUTHS = [
+    "What is your biggest fear?", "Your most embarrassing moment?",
+    "Who was your first crush?", "A secret you’ve never told anyone?"
+]
+DARES = [
+    "Dance for 30 seconds.", "Sing a song loudly.",
+    "Do 10 push-ups.", "Talk in an accent for 2 turns."
+]
+
+@app.websocket("/ws")
+async def ws_endpoint(ws: WebSocket):
+    global waiting, partner_of
+    await ws.accept()
+
+    # Pair or wait
+    if waiting is None:
+        waiting = ws
+        await ws.send_json({"type": "waiting", "msg": "Waiting for a partner..."})
     else:
-        partner = waiting_player
-        waiting_player = None
-        active_pairs[websocket] = partner
-        active_pairs[partner] = websocket
-
-        await websocket.send_json({"type": "start"})
-        await partner.send_json({"type": "start"})
+        partner = waiting
+        waiting = None
+        partner_of[ws] = partner
+        partner_of[partner] = ws
+        # choose a caller (starts WebRTC offer)
+        await ws.send_json({"type": "paired", "role": "caller"})
+        await partner.send_json({"type": "paired", "role": "callee"})
 
     try:
         while True:
-            data = await websocket.receive_json()
+            data = await ws.receive_json()
 
-            if data["type"] == "truth":
-                question = random.choice(truth_questions)
-                await websocket.send_json({"type": "truth", "question": question})
-                if websocket in active_pairs:
-                    await active_pairs[websocket].send_json({"type": "truth", "question": question})
+            # relay anything to the partner (offer/answer/candidate/chat/game)
+            p = partner_of.get(ws)
+            if not p:
+                continue
 
-            elif data["type"] == "dare":
-                question = random.choice(dare_questions)
-                await websocket.send_json({"type": "dare", "question": question})
-                if websocket in active_pairs:
-                    await active_pairs[websocket].send_json({"type": "dare", "question": question})
+            t = data.get("type")
+
+            if t in ("offer", "answer", "candidate", "chat"):
+                await p.send_json(data)
+
+            elif t == "truth":
+                q = random.choice(TRUTHS)
+                await ws.send_json({"type": "truth", "question": q})
+                await p.send_json({"type": "truth", "question": q})
+
+            elif t == "dare":
+                q = random.choice(DARES)
+                await ws.send_json({"type": "dare", "question": q})
+                await p.send_json({"type": "dare", "question": q})
 
     except WebSocketDisconnect:
-        if websocket in active_pairs:
-            partner = active_pairs[websocket]
-            await partner.send_json({"type": "status", "message": "Partner disconnected."})
-            del active_pairs[partner]
-            del active_pairs[websocket]
-        elif websocket == waiting_player:
-            waiting_player = None
+        # clean up + notify partner
+        p = partner_of.pop(ws, None)
+        if p:
+            partner_of.pop(p, None)
+            try:
+                await p.send_json({"type": "peer-left"})
+            except:
+                pass
+        if waiting is ws:
+            waiting = None
