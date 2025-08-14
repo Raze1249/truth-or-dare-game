@@ -1,24 +1,25 @@
-from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
+from fastapi import FastAPI, WebSocket
+import uvicorn
 
-# Create FastAPI app instance
-app = FastAPI()(debug=True)
-from fastapi import WebSocket
+app = FastAPI()
 
+# Test GET route
+@app.get("/")
+async def root():
+    return {"message": "Truth or Dare server is running!"}
+
+# Simple WebSocket route
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
-    await websocket.send_text("Connected to Truth or Dare")
+    await websocket.send_text("Connected to Truth or Dare server")
+    try:
+        while True:
+            data = await websocket.receive_text()
+            await websocket.send_text(f"You said: {data}")
+    except Exception as e:
+        print("WebSocket closed:", e)
 
-# Mount static files (CSS, JS, images)
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
-# Set up templates folder
-templates = Jinja2Templates(directory="templates")
-
-# Home route
-@app.get("/", response_class=HTMLResponse)
-async def home(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+# For local testing
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=8000)
