@@ -1,0 +1,66 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Stranger Truth or Dare (Python + WebRTC)</title>
+  <link rel="stylesheet" href="/style.css">
+  <!-- Socket.IO client (served from CDN) -->
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>Truth or Dare — Live</h1>
+      <p class="muted">Built with Python (FastAPI + Socket.IO) and WebRTC</p>
+    </header>
+
+    <section class="controls">
+      <label class="age">
+        <input type="checkbox" id="ageGate"> I confirm I am 18+ and agree to be respectful.
+      </label>
+      <button id="startBtn">Start / Find Partner</button>
+      <button id="nextBtn" disabled>Next Partner</button>
+      <button id="reportBtn" disabled>Report</button>
+      <span id="status"></span>
+    </section>
+
+    <section class="main">
+      <div class="videos">
+        <div class="videoBox">
+          <video id="localVideo" autoplay playsinline muted></video>
+          <div class="label">You</div>
+        </div>
+        <div class="videoBox">
+          <video id="remoteVideo" autoplay playsinline></video>
+          <div class="label">Partner</div>
+        </div>
+      </div>
+
+      <aside class="sidebar">
+        <div class="game">
+          <h3>Truth or Dare</h3>
+          <div class="buttons">
+            <button id="truthBtn" disabled>Truth</button>
+            <button id="dareBtn" disabled>Dare</button>
+          </div>
+          <div id="promptBox" class="prompt">Click Truth/Dare to get a prompt for both of you.</div>
+          <div id="timer" class="timer"></div>
+        </div>
+
+        <div class="chat">
+          <h3>Chat</h3>
+          <div id="chatLog" class="chatLog"></div>
+          <form id="chatForm">
+            <input id="chatInput" type="text" placeholder="Type a message..." autocomplete="off" disabled />
+            <button id="sendBtn" disabled>Send</button>
+          </form>
+        </div>
+      </aside>
+    </section>
+  </div>
+
+  <script src="/main.js"></script>
+</body>
+</html>
