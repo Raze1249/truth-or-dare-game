@@ -1,37 +1,12 @@
-body {
-    background-color: #f2f2f2;
-    font-family: Arial, sans-serif;
-    text-align: center;
-}
-
-.container {
-    margin-top: 50px;
-}
-
-h1 {
-    color: #333;
-}
-
-#status {
-    font-size: 18px;
-    margin-bottom: 20px;
-}
-
-.buttons button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 15px 30px;
-    margin: 10px;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-.buttons button:hover {
-    background-color: #45a049;
-}
-
-#question-box, #response-box {
-    margin-top: 20px;
-    font-size: 18px;
-}
+body { font-family: system-ui, Arial, sans-serif; background:#f6f7fb; margin:0; padding:24px; color:#222; }
+h1 { margin-top:0; }
+#status { margin:8px 0 16px; font-weight:600; }
+.video-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start; }
+video { width:100%; background:#000; border-radius:12px; }
+.controls button { margin-top:8px; }
+.game { margin:20px 0; }
+.buttons button { padding:10px 16px; margin-right:8px; }
+.chat { display:grid; grid-template-columns:1fr auto; gap:8px; max-width:600px; }
+#chatLog { grid-column:1 / -1; background:#fff; border:1px solid #ddd; border-radius:10px; padding:10px; height:160px; overflow:auto; }
+.msg-me { text-align:right; }
+.msg-peer { text-align:left; }
