@@ -1,27 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Truth or Dare Game</title>
-    <link rel="stylesheet" href="/static/style.css">
+  <meta charset="utf-8" />
+  <title>Truth or Dare — Live</title>
+  <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
-    <div class="container">
-        <h1>🎯 Truth or Dare</h1>
-        <div id="status">Connecting to server...</div>
+  <h1>🎯 Truth or Dare — Live</h1>
+  <div id="status">Connecting…</div>
 
-        <div id="game" style="display: none;">
-            <div id="question-box"></div>
-
-            <div class="buttons">
-                <button id="truth-btn">Truth</button>
-                <button id="dare-btn">Dare</button>
-            </div>
-
-            <div id="response-box"></div>
-        </div>
+  <div class="video-grid">
+    <div>
+      <h3>You</h3>
+      <video id="localVideo" autoplay playsinline muted></video>
+      <div class="controls">
+        <button id="toggleMic">🎙️ Mic</button>
+        <button id="toggleCam">📷 Cam</button>
+      </div>
     </div>
+    <div>
+      <h3>Partner</h3>
+      <video id="remoteVideo" autoplay playsinline></video>
+    </div>
+  </div>
 
-    <script src="/static/main.js"></script>
+  <div class="game">
+    <div id="qbox">Press a button to begin.</div>
+    <div class="buttons">
+      <button id="truthBtn">Truth</button>
+      <button id="dareBtn">Dare</button>
+    </div>
+  </div>
+
+  <div class="chat">
+    <input id="chatInput" placeholder="Type message…" />
+    <button id="sendBtn">Send</button>
+    <div id="chatLog"></div>
+  </div>
+
+  <script src="/static/main.js"></script>
 </body>
 </html>
