@@ -1,42 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>Truth or Dare — Live</title>
-  <link rel="stylesheet" href="/static/style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Truth or Dare Live</title>
+  <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-  <h1>🎯 Truth or Dare — Live</h1>
-  <div id="status">Connecting…</div>
+  <header>
+    <nav>
+      <ul>
+        <li>Home</li>
+        <li>Service</li>
+        <li>About Us</li>
+        <li>Contact</li>
+      </ul>
+    </nav>
+  </header>
 
-  <div class="video-grid">
-    <div>
-      <h3>You</h3>
-      <video id="localVideo" autoplay playsinline muted></video>
-      <div class="controls">
-        <button id="toggleMic">🎙️ Mic</button>
-        <button id="toggleCam">📷 Cam</button>
+  <main>
+    <h1>🎯 Truth or Dare</h1>
+    <p id="status">Connecting...</p>
+
+    <!-- Video panels -->
+    <div class="video-container">
+      <div class="player-box">
+        <h3>You</h3>
+        <video id="localVideo" autoplay playsinline muted></video>
+      </div>
+      <div class="player-box">
+        <h3>Partner</h3>
+        <video id="remoteVideo" autoplay playsinline></video>
       </div>
     </div>
-    <div>
-      <h3>Partner</h3>
-      <video id="remoteVideo" autoplay playsinline></video>
-    </div>
-  </div>
 
-  <div class="game">
-    <div id="qbox">Press a button to begin.</div>
-    <div class="buttons">
+    <!-- Controls -->
+    <div class="controls">
+      <button id="nextBtn">🔄 Next Partner</button>
+      <button id="toggleMic">🎙️ Mic</button>
+      <button id="toggleCam">📷 Video</button>
+    </div>
+
+    <!-- Truth/Dare buttons -->
+    <div class="game">
+      <p id="qbox">Press Truth or Dare to start!</p>
       <button id="truthBtn">Truth</button>
       <button id="dareBtn">Dare</button>
     </div>
-  </div>
 
-  <div class="chat">
-    <input id="chatInput" placeholder="Type message…" />
-    <button id="sendBtn">Send</button>
-    <div id="chatLog"></div>
-  </div>
+    <!-- Chat -->
+    <div class="chat">
+      <div id="chatLog"></div>
+      <div class="chat-input">
+        <input id="chatInput" placeholder="Type a message...">
+        <button id="sendBtn">Send</button>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2025 Truth or Dare Live</p>
+  </footer>
 
   <script src="/static/main.js"></script>
 </body>
