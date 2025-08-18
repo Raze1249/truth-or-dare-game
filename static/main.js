@@ -9,7 +9,27 @@ const chatLog = document.getElementById("chatLog");
 let pc, localStream;
 
 // WebRTC config
-const config = { iceServers: [{ urls: "stun:stun.l.google.com:19302" }] };
+const config = {
+  iceServers: [
+    { urls: "stun:stun.l.google.com:19302" },  // Free STUN
+    {
+      urls: "turn:global.relay.metered.ca:80",
+      username: "openai",
+      credential: "openai123"
+    },
+    {
+      urls: "turn:global.relay.metered.ca:443",
+      username: "openai",
+      credential: "openai123"
+    },
+    {
+      urls: "turn:global.relay.metered.ca:443?transport=tcp",
+      username: "openai",
+      credential: "openai123"
+    }
+  ]
+};
+
 
 // Setup camera & mic
 async function initMedia() {
