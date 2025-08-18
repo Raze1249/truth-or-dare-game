@@ -1,12 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Truth or Dare Live</title>
-  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
+  <!-- Username Modal -->
+  <div id="nameModal" class="modal">
+    <div class="modal-content">
+      <h2>Choose a username</h2>
+      <input id="nameInput" maxlength="32" placeholder="e.g., Alex" />
+      <button id="saveNameBtn">Join</button>
+    </div>
+  </div>
+
   <header>
     <nav>
       <ul>
@@ -25,11 +34,11 @@
     <!-- Video Panels -->
     <div class="video-container">
       <div class="player-box">
-        <h3>You</h3>
+        <h3 id="youLabel">You</h3>
         <video id="localVideo" autoplay playsinline muted></video>
       </div>
       <div class="player-box">
-        <h3>Partner</h3>
+        <h3 id="partnerLabel">Partner</h3>
         <video id="remoteVideo" autoplay playsinline></video>
       </div>
     </div>
@@ -52,7 +61,7 @@
     <div class="chat">
       <div id="chatLog"></div>
       <div class="chat-input">
-        <input id="chatInput" placeholder="Type a message...">
+        <input id="chatInput" placeholder="Type a message..." />
         <button id="sendBtn">Send</button>
       </div>
     </div>
