@@ -1,4 +1,4 @@
-/* Gradient background */
+/* Gradient Background */
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
@@ -10,6 +10,7 @@ body {
   flex-direction: column;
 }
 
+/* Header */
 header {
   background: rgba(0, 0, 0, 0.2);
   padding: 10px 0;
@@ -27,17 +28,10 @@ nav li {
   font-weight: bold;
 }
 
-h1 {
-  margin: 20px 0 10px;
-}
-#status {
-  font-weight: 600;
-}
-
-main {
-  flex: 1;
-  padding: 20px;
-}
+/* Main */
+h1 { margin: 20px 0 10px; }
+#status { font-weight: 600; }
+main { flex: 1; padding: 20px; }
 
 /* Video */
 .video-container {
@@ -71,11 +65,9 @@ button {
   cursor: pointer;
   transition: transform 0.2s;
 }
-button:hover {
-  transform: scale(1.05);
-}
+button:hover { transform: scale(1.05); }
 
-/* Truth/Dare */
+/* Game */
 .game #qbox {
   margin: 15px 0;
   font-size: 18px;
