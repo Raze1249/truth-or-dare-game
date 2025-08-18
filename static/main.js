@@ -8,10 +8,10 @@ const chatLog = document.getElementById("chatLog");
 
 let pc, localStream;
 
-// WebRTC config
+// --- TURN + STUN ---
 const config = {
   iceServers: [
-    { urls: "stun:stun.l.google.com:19302" },  // Free STUN
+    { urls: "stun:stun.l.google.com:19302" },
     {
       urls: "turn:global.relay.metered.ca:80",
       username: "openai",
@@ -21,27 +21,21 @@ const config = {
       urls: "turn:global.relay.metered.ca:443",
       username: "openai",
       credential: "openai123"
-    },
-    {
-      urls: "turn:global.relay.metered.ca:443?transport=tcp",
-      username: "openai",
-      credential: "openai123"
     }
   ]
 };
 
-
-// Setup camera & mic
+// Init mic/cam
 async function initMedia() {
   localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
   localVideo.srcObject = localStream;
 }
 
-// WebRTC connection
+// Create PeerConnection
 function createPC() {
   pc = new RTCPeerConnection(config);
   localStream.getTracks().forEach(t => pc.addTrack(t, localStream));
-  pc.ontrack = e => remoteVideo.srcObject = e.streams[0];
+  pc.ontrack = e => { remoteVideo.srcObject = e.streams[0]; };
   pc.onicecandidate = e => {
     if (e.candidate) ws.send(JSON.stringify({ type: "candidate", candidate: e.candidate }));
   };
@@ -55,7 +49,19 @@ async function startCall() {
   ws.send(JSON.stringify({ type: "offer", sdp: offer.sdp }));
 }
 
-// Handle incoming messages
+// Reset + Next Partner
+function resetConnection() {
+  if (pc) { pc.close(); pc = null; }
+  if (remoteVideo.srcObject) {
+    remoteVideo.srcObject.getTracks().forEach(t => t.stop());
+    remoteVideo.srcObject = null;
+  }
+  statusEl.textContent = "Looking for a new partner...";
+  ws.send(JSON.stringify({ type: "next" }));
+}
+document.getElementById("nextBtn").onclick = resetConnection;
+
+// --- WebSocket Events ---
 ws.onmessage = async ev => {
   const data = JSON.parse(ev.data);
 
@@ -80,7 +86,12 @@ ws.onmessage = async ev => {
   }
 
   if (data.type === "candidate") {
-    try { await pc.addIceCandidate(data.candidate); } catch {}
+    try { await pc.addIceCandidate(new RTCIceCandidate(data.candidate)); } catch {}
+  }
+
+  if (data.type === "peer-left") {
+    statusEl.textContent = "Partner disconnected. Reconnecting...";
+    resetConnection();
   }
 
   if (data.type === "truth") qbox.textContent = "Truth: " + data.question;
@@ -88,7 +99,7 @@ ws.onmessage = async ev => {
   if (data.type === "chat") addChat(data.text, false);
 };
 
-// Chat
+// --- Chat ---
 function addChat(msg, me) {
   const div = document.createElement("div");
   div.textContent = msg;
@@ -104,11 +115,11 @@ document.getElementById("sendBtn").onclick = () => {
   chatInput.value = "";
 };
 
-// Truth/Dare
+// --- Truth/Dare ---
 document.getElementById("truthBtn").onclick = () => ws.send(JSON.stringify({ type: "truth" }));
 document.getElementById("dareBtn").onclick  = () => ws.send(JSON.stringify({ type: "dare" }));
 
-// Mic / Cam toggle
+// --- Mic / Cam ---
 document.getElementById("toggleMic").onclick = () => {
   localStream.getAudioTracks().forEach(t => t.enabled = !t.enabled);
 };
