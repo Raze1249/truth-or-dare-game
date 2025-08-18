@@ -44,11 +44,11 @@ main { flex: 1; padding: 20px; }
 .player-box {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 15px;
-  padding: 10px;
+  padding: 10px 14px 14px;
 }
 video {
-  width: 200px;
-  height: 150px;
+  width: 220px;
+  height: 160px;
   background: black;
   border-radius: 10px;
 }
@@ -80,15 +80,17 @@ button:hover { transform: scale(1.05); }
   border-radius: 15px;
   padding: 10px;
   margin: 20px auto;
-  max-width: 400px;
+  max-width: 420px;
 }
 #chatLog {
-  height: 150px;
+  height: 170px;
   overflow-y: auto;
   text-align: left;
   background: rgba(0,0,0,0.2);
   padding: 10px;
   border-radius: 10px;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 .chat-input {
   display: flex;
@@ -98,15 +100,41 @@ button:hover { transform: scale(1.05); }
   flex: 1;
   border: none;
   border-radius: 20px;
-  padding: 8px;
+  padding: 10px;
 }
-.chat-input button {
-  margin-left: 8px;
-}
+.chat-input button { margin-left: 8px; }
 
 /* Footer */
 footer {
   padding: 10px;
   font-size: 14px;
   background: rgba(0,0,0,0.2);
+}
+
+/* Username Modal */
+.modal {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000;
+}
+.modal-content {
+  background: #fff;
+  color: #333;
+  padding: 20px;
+  border-radius: 14px;
+  width: 90%; max-width: 360px;
+  text-align: center;
+}
+.modal input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  margin-top: 10px;
+}
+.modal button {
+  margin-top: 12px;
+  background: linear-gradient(135deg, #a445b2, #ff0066);
+  color: #fff;
 }
