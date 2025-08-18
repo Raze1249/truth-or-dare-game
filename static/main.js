@@ -20,8 +20,11 @@ let pc, localStream;
 const config = {
   iceServers: [
     { urls: "stun:stun.l.google.com:19302" },
-    { urls: "turn:global.relay.metered.ca:80",  username: "openai", credential: "openai123" },
-    { urls: "turn:global.relay.metered.ca:443", username: "openai", credential: "openai123" }
+    {
+      urls: "turn:relay1.expressturn.com:3478",
+      username: "efwT7qCjJzG8m3jXwP",
+      credential: "gSoK6gXHnPrU5rPh"
+    }
   ]
 };
 
