@@ -19,11 +19,18 @@ let pc, localStream;
 // --- TURN + STUN (add your own TURN in prod) ---
 const config = {
   iceServers: [
-    { urls: "stun:stun.l.google.com:19302" },
-    {
-      urls: "turn:relay1.expressturn.com:3478",
-      username: "efwT7qCjJzG8m3jXwP",
-      credential: "gSoK6gXHnPrU5rPh"
+    { urls: [ "stun:bn-turn1.xirsys.com" ] },
+    { 
+      username: "iTSBhv398vgsZy4WzMwpP0xjHEyxI4T5vWwwUguiUrP7eQIz3RERqm0TnaBOY5kiAAAAAGiiu5FSYXplMTI0OQ==", 
+      credential: "1d2a5906-7bf5-11f0-906d-0242ac140004", 
+      urls: [
+        "turn:bn-turn1.xirsys.com:80?transport=udp",
+        "turn:bn-turn1.xirsys.com:3478?transport=udp",
+        "turn:bn-turn1.xirsys.com:80?transport=tcp",
+        "turn:bn-turn1.xirsys.com:3478?transport=tcp",
+        "turns:bn-turn1.xirsys.com:443?transport=tcp",
+        "turns:bn-turn1.xirsys.com:5349?transport=tcp"
+      ]
     }
   ]
 };
